@@ -1,0 +1,2411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEET Study Planner - Complete Professional Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary: #14b8a6;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f97316;
+            --neet-pink: #ec4899;
+            --neet-purple: #8b5cf6;
+            --neet-cyan: #06b6d4;
+            
+            --bg-primary: #fafbfc;
+            --bg-secondary: #ffffff;
+            --bg-accent: #f8fafc;
+            --surface: #ffffff;
+            --glass: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --border-light: #f1f5f9;
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            
+            --radius: 16px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --spacing: 1rem;
+            --font-size: 14px;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-accent: #334155;
+            --surface: #1e293b;
+            --glass: rgba(30, 41, 59, 0.4);
+            --glass-border: rgba(148, 163, 184, 0.2);
+            
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --border: #334155;
+            --border-light: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-accent) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: var(--font-size);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header with Glassmorphism */
+        .header {
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--neet-pink), var(--neet-cyan), var(--success));
+        }
+
+        .header h1 {
+            font-size: clamp(1.75rem, 4vw, 3rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--neet-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .exam-countdown {
+            background: linear-gradient(135deg, var(--neet-pink), var(--neet-purple));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exam-countdown::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .theme-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .theme-btn {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            border-radius: var(--radius);
+            cursor: pointer;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .theme-btn:hover {
+            background: var(--bg-accent);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Navigation with Floating Design */
+        .nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            padding: 1rem;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn:hover {
+            background: var(--bg-accent);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Beautiful Cards with Glassmorphism */
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--glass-border);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(236, 72, 153, 0.05));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .card-header h2, .card-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* Circular Dashboard Components */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .circle-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .circle-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.2);
+        }
+
+        .circle-progress {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .circle-progress svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: var(--border-light);
+            stroke-width: 8;
+        }
+
+        .circle-fill {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dasharray 1s ease-in-out;
+        }
+
+        .circle-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .circle-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .circle-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .circle-subtitle {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .circle-description {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Mini Stats Grid */
+        .mini-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .mini-stat {
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mini-stat:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .mini-stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 1rem;
+        }
+
+        .mini-stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .mini-stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Form Elements */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .form-control {
+            padding: 1rem 1.25rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Buttons with Modern Design */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:hover {
+            box-shadow: var(--shadow-xl);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-accent);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #14b8a6);
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        /* OMR Interface */
+        .omr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .question-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .bubbles {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .bubble {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid var(--border);
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 700;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bubble:hover {
+            transform: scale(1.1);
+            border-color: var(--primary);
+        }
+
+        .bubble.selected {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-color: var(--primary);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* OMR Answer Key Grid */
+        .omr-answer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .answer-question {
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .answer-bubbles {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        .answer-radio {
+            position: relative;
+        }
+
+        .answer-radio input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .answer-radio label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            border: 3px solid var(--border);
+            border-radius: 50%;
+            background: var(--surface);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 0;
+        }
+
+        .answer-radio input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, var(--success), #14b8a6);
+            border-color: var(--success);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .answer-radio:hover label {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        /* Timer Display */
+        .timer-display {
+            font-size: 3.5rem;
+            font-weight: 900;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--glass), rgba(239, 68, 68, 0.1));
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            margin-bottom: 2rem;
+            color: var(--danger);
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            letter-spacing: -0.02em;
+        }
+
+        .timer-warning {
+            color: var(--warning) !important;
+        }
+
+        .timer-danger {
+            color: var(--danger) !important;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Habit Tracker */
+        .habit-grid {
+            display: grid;
+            grid-template-columns: repeat(21, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .habit-day {
+            aspect-ratio: 1;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.875rem;
+            font-weight: 600;
+            background: var(--surface);
+        }
+
+        .habit-day:hover {
+            background: var(--bg-accent);
+            transform: scale(1.1);
+            border-color: var(--primary);
+        }
+
+        .habit-day.completed {
+            background: linear-gradient(135deg, var(--success), #14b8a6);
+            color: white;
+            border-color: var(--success);
+            transform: scale(1.1);
+        }
+
+        /* Checklist Items */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .checklist-item.completed {
+            opacity: 0.7;
+            text-decoration: line-through;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checklist-text {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        /* Mock Test Items */
+        .mock-test-item {
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+
+        .mock-test-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .mock-test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .mock-test-form {
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            display: none;
+        }
+
+        .mock-test-form.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-light);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neet-cyan), var(--secondary));
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Animations */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--neet-pink));
+            color: white;
+            border: none;
+            box-shadow: var(--shadow-xl);
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .fab:hover {
+            transform: translateY(-4px) scale(1.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .circle-progress {
+                width: 160px;
+                height: 160px;
+            }
+
+            .circle-value {
+                font-size: 2rem;
+            }
+
+            .habit-grid {
+                grid-template-columns: repeat(7, 1fr);
+            }
+
+            .timer-display {
+                font-size: 2.5rem;
+                padding: 1.5rem;
+            }
+
+            .nav {
+                padding: 0.75rem;
+            }
+
+            .nav-btn {
+                padding: 0.75rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .omr-grid,
+            .omr-answer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .text-muted { color: var(--text-muted); }
+        .mb-2 { margin-bottom: 1rem; }
+        .mt-2 { margin-top: 1rem; }
+        .flex { display: flex; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .gap-2 { gap: 1rem; }
+
+        /* Subject Colors */
+        .subject-biology { 
+            stroke: url(#biology-gradient);
+        }
+        .subject-chemistry { 
+            stroke: url(#chemistry-gradient);
+        }
+        .subject-physics { 
+            stroke: url(#physics-gradient);
+        }
+        .subject-overall {
+            stroke: url(#overall-gradient);
+        }
+    </style>
+</head>
+<body>
+    <!-- SVG Gradients -->
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <linearGradient id="biology-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#14b8a6;stop-opacity:1" />
+            </linearGradient>
+            <linearGradient id="chemistry-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#f97316;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#ea580c;stop-opacity:1" />
+            </linearGradient>
+            <linearGradient id="physics-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+            </linearGradient>
+            <linearGradient id="overall-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#818cf8;stop-opacity:1" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="scrollToTop()">↑</button>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 NEET Study Planner</h1>
+            <div class="header-controls">
+                <div class="exam-countdown" id="examCountdown">
+                    <div style="font-size: 0.875rem; opacity: 0.9;">Exam in</div>
+                    <div style="font-size: 1.25rem; font-weight: 800;" id="daysLeft">Set Date</div>
+                    <div style="font-size: 0.875rem; opacity: 0.9;">days</div>
+                </div>
+                <div class="theme-controls">
+                    <button class="theme-btn" onclick="toggleTheme()" title="Toggle Dark Mode">🌙</button>
+                    <select class="theme-btn" onchange="changeFontSize(this.value)">
+                        <option value="14px" selected>14px</option>
+                        <option value="16px">16px</option>
+                        <option value="18px">18px</option>
+                    </select>
+                    <button class="theme-btn" onclick="exportData()" title="Export Data">📤</button>
+                    <button class="theme-btn" onclick="importDataClick()" title="Import Data">📥</button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <button class="nav-btn active" onclick="showTab('dashboard')">🏠 Dashboard</button>
+            <button class="nav-btn" onclick="showTab('profile')">👤 Profile</button>
+            <button class="nav-btn" onclick="showTab('omr')">⭕ OMR Practice</button>
+            <button class="nav-btn" onclick="showTab('mock')">📝 Mock Tests</button>
+            <button class="nav-btn" onclick="showTab('checklist')">✅ Checklist</button>
+            <button class="nav-btn" onclick="showTab('subjects')">📚 Subjects</button>
+            <button class="nav-btn" onclick="showTab('habits')">🏃 Habits</button>
+            <button class="nav-btn" onclick="showTab('timer')">⏱️ Timer</button>
+            <button class="nav-btn" onclick="showTab('analytics')">📊 Analytics</button>
+        </nav>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <!-- Circular Progress Dashboard -->
+            <div class="dashboard-grid">
+                <!-- Study Progress -->
+                <div class="circle-card">
+                    <div class="circle-progress">
+                        <svg>
+                            <circle cx="100" cy="100" r="90" class="circle-bg"></circle>
+                            <circle cx="100" cy="100" r="90" class="circle-fill subject-overall" 
+                                    id="studyProgressCircle" stroke-dasharray="0 565.48"></circle>
+                        </svg>
+                        <div class="circle-text">
+                            <div class="circle-value" id="studyProgressValue">0%</div>
+                            <div class="circle-label">Overall</div>
+                        </div>
+                    </div>
+                    <div class="circle-subtitle">Study Progress</div>
+                    <div class="circle-description" id="studyProgressDesc">Start your journey!</div>
+                </div>
+
+                <!-- Biology Progress -->
+                <div class="circle-card">
+                    <div class="circle-progress">
+                        <svg>
+                            <circle cx="100" cy="100" r="90" class="circle-bg"></circle>
+                            <circle cx="100" cy="100" r="90" class="circle-fill subject-biology" 
+                                    id="bioProgressCircle" stroke-dasharray="0 565.48"></circle>
+                        </svg>
+                        <div class="circle-text">
+                            <div class="circle-value" id="bioProgressValue">0%</div>
+                            <div class="circle-label">Biology</div>
+                        </div>
+                    </div>
+                    <div class="circle-subtitle">🧬 Biology Mastery</div>
+                    <div class="circle-description" id="bioProgressDesc">Ready to explore!</div>
+                </div>
+
+                <!-- Chemistry Progress -->
+                <div class="circle-card">
+                    <div class="circle-progress">
+                        <svg>
+                            <circle cx="100" cy="100" r="90" class="circle-bg"></circle>
+                            <circle cx="100" cy="100" r="90" class="circle-fill subject-chemistry" 
+                                    id="chemProgressCircle" stroke-dasharray="0 565.48"></circle>
+                        </svg>
+                        <div class="circle-text">
+                            <div class="circle-value" id="chemProgressValue">0%</div>
+                            <div class="circle-label">Chemistry</div>
+                        </div>
+                    </div>
+                    <div class="circle-subtitle">⚗️ Chemistry Progress</div>
+                    <div class="circle-description" id="chemProgressDesc">Let's get started!</div>
+                </div>
+
+                <!-- Physics Progress -->
+                <div class="circle-card">
+                    <div class="circle-progress">
+                        <svg>
+                            <circle cx="100" cy="100" r="90" class="circle-bg"></circle>
+                            <circle cx="100" cy="100" r="90" class="circle-fill subject-physics" 
+                                    id="phyProgressCircle" stroke-dasharray="0 565.48"></circle>
+                        </svg>
+                        <div class="circle-text">
+                            <div class="circle-value" id="phyProgressValue">0%</div>
+                            <div class="circle-label">Physics</div>
+                        </div>
+                    </div>
+                    <div class="circle-subtitle">⚡ Physics Mastery</div>
+                    <div class="circle-description" id="phyProgressDesc">Begin the adventure!</div>
+                </div>
+            </div>
+
+            <!-- Mini Stats -->
+            <div class="mini-stats">
+                <div class="mini-stat">
+                    <div class="mini-stat-icon subject-overall" style="background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white;">📚</div>
+                    <div class="mini-stat-value" id="totalStudyHoursStat">0</div>
+                    <div class="mini-stat-label">Study Hours</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-icon subject-biology" style="background: linear-gradient(135deg, var(--success), #14b8a6); color: white;">⭕</div>
+                    <div class="mini-stat-value" id="totalOMRTestsStat">0</div>
+                    <div class="mini-stat-label">OMR Tests</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-icon subject-chemistry" style="background: linear-gradient(135deg, var(--warning), #ea580c); color: white;">📝</div>
+                    <div class="mini-stat-value" id="totalMockTestsStat">0</div>
+                    <div class="mini-stat-label">Mock Tests</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-icon subject-physics" style="background: linear-gradient(135deg, var(--accent), #d97706); color: white;">🏃</div>
+                    <div class="mini-stat-value" id="activeHabitsStat">0</div>
+                    <div class="mini-stat-label">Active Habits</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>⚡ Quick Actions</h2>
+                </div>
+                <div class="card-body">
+                    <div class="flex gap-2" style="flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="showTab('omr')">🚀 Start OMR Test</button>
+                        <button class="btn btn-secondary" onclick="showTab('timer')">⏱️ Study Timer</button>
+                        <button class="btn btn-secondary" onclick="showTab('mock')">📝 Mock Tests</button>
+                        <button class="btn btn-secondary" onclick="showTab('habits')">✅ Track Habits</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Tab -->
+        <div id="profile" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>👤 Personal Information</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" oninput="saveProfile(); updateDashboard()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Age</label>
+                            <input type="number" class="form-control" id="age" min="16" max="25" oninput="saveProfile()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">NEET Exam Date</label>
+                            <input type="date" class="form-control" id="examDate" onchange="saveProfile(); updateExamCountdown()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Target Score</label>
+                            <input type="number" class="form-control" id="targetTotal" max="720" oninput="saveProfile()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OMR Practice Tab -->
+        <div id="omr" class="tab-content">
+            <!-- OMR Setup -->
+            <div class="card" id="omrSetup">
+                <div class="card-header">
+                    <h2>⭕ OMR Test Setup</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Test Name</label>
+                            <input type="text" class="form-control" id="testName" placeholder="e.g., Biology Mock Test #1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Total Questions</label>
+                            <input type="number" class="form-control" id="totalQuestions" value="20" min="5" max="200">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Time Duration (minutes)</label>
+                            <input type="number" class="form-control" id="testDuration" value="30" min="5" max="300">
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-2" style="flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="startOMRTest()">🚀 Start Test</button>
+                        <button class="btn btn-secondary" onclick="loadFullNEET()">📋 Full NEET (180Q)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OMR Test Interface -->
+            <div class="card hidden" id="omrTest">
+                <div class="card-header">
+                    <div class="flex-between">
+                        <h2 id="testTitle">OMR Test</h2>
+                        <div class="timer-display" id="omrTimer">00:30:00</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="progress-bar mb-2">
+                        <div class="progress-fill" id="omrProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="text-center text-muted mb-2">
+                        <span id="progressText">0 / 0 answered</span>
+                    </div>
+                    
+                    <div id="omrQuestions" class="omr-grid">
+                        <!-- Dynamic OMR questions -->
+                    </div>
+                    
+                    <div class="flex gap-2 mt-2">
+                        <button class="btn btn-success" onclick="submitOMRTest()">✅ Submit Test</button>
+                        <button class="btn btn-secondary" onclick="cancelOMRTest()">❌ Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OMR Results -->
+            <div class="card hidden" id="omrResults">
+                <div class="card-header">
+                    <h2>📊 Test Results</h2>
+                </div>
+                <div class="card-body">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalScore">0</div>
+                            <div class="stat-label">Total Score</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="correctAnswers" style="color: var(--success);">0</div>
+                            <div class="stat-label">Correct</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="wrongAnswers" style="color: var(--danger);">0</div>
+                            <div class="stat-label">Wrong</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="unansweredQuestions" style="color: var(--text-muted);">0</div>
+                            <div class="stat-label">Unanswered</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2 mt-2">
+                        <button class="btn btn-primary" onclick="inputAnswerKey()">🔑 Enter Answer Key</button>
+                        <button class="btn btn-secondary" onclick="newOMRTest()">🆕 New Test</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OMR Answer Key Input -->
+            <div class="card hidden" id="answerKeyInput">
+                <div class="card-header">
+                    <h2>🔑 Enter Answer Key</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-2">Select the correct answer for each question:</p>
+                    <div id="answerKeyGrid" class="omr-answer-grid">
+                        <!-- Dynamic answer key questions -->
+                    </div>
+                    <div class="flex gap-2 mt-2">
+                        <button class="btn btn-primary" onclick="processOMRAnswerKey()">✅ Check Answers</button>
+                        <button class="btn btn-secondary" onclick="cancelAnswerKey()">❌ Cancel</button>
+                        <button class="btn btn-secondary" onclick="fillSampleAnswers()">📝 Fill Sample</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mock Tests Tab -->
+        <div id="mock" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="flex-between">
+                        <h2>📝 Mock Test Management</h2>
+                        <button class="btn btn-primary" onclick="showMockTestForm()">+ Add Mock Test</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Add Mock Test Form -->
+                    <div id="mockTestForm" class="mock-test-form">
+                        <h3 style="margin-bottom: 1.5rem;">Add New Mock Test</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Test Name</label>
+                                <input type="text" class="form-control" id="mockTestName" placeholder="e.g., NEET Mock Test #1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Test Date</label>
+                                <input type="date" class="form-control" id="mockTestDate">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Biology Score</label>
+                                <input type="number" class="form-control" id="mockBioScore" max="360" min="0" oninput="updateMockTotal()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Chemistry Score</label>
+                                <input type="number" class="form-control" id="mockChemScore" max="180" min="0" oninput="updateMockTotal()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Physics Score</label>
+                                <input type="number" class="form-control" id="mockPhyScore" max="180" min="0" oninput="updateMockTotal()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Total Score</label>
+                                <input type="number" class="form-control" id="mockTotalScore" readonly style="background: var(--bg-accent);">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Notes & Analysis</label>
+                            <textarea class="form-control" id="mockTestNotes" placeholder="Test analysis, mistakes, improvements needed..."></textarea>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="btn btn-primary" onclick="saveMockTest()">Save Test</button>
+                            <button class="btn btn-secondary" onclick="cancelMockTest()">Cancel</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Mock Tests List -->
+                    <div id="mockTestsList">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Checklist Tab -->
+        <div id="checklist" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>✅ Study Checklist</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="checklistInput" placeholder="Add checklist item..." onkeypress="addChecklistItem(event)">
+                    </div>
+                    <div id="checklistItems"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subjects Tab -->
+        <div id="subjects" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📚 Subject Progress</h2>
+                </div>
+                <div class="card-body">
+                    <div class="dashboard-grid">
+                        <div class="circle-card">
+                            <div class="circle-progress">
+                                <svg>
+                                    <circle cx="100" cy="100" r="90" class="circle-bg"></circle>
+                                    <circle cx="100" cy="100" r="90" class="circle-fill subject-biology" 
+                                            stroke-dasharray="0 565.48" id="subjectBioCircle"></circle>
+                                </svg>
+                                <div class="circle-text">
+                                    <div class="circle-value" id="subjectBioValue">0%</div>
+                                    <div class="circle-label">Complete</div>
+                                </div>
+                            </div>
+                            <div class="circle-subtitle">🧬 Biology</div>
+                            <div class="circle-description" id="subjectBioDesc">Start studying chapters</div>
+                        </div>
+                        
+                        <div class="circle-card">
+                            <div class="circle-progress">
+                                <svg>
+                                    <circle cx="100" cy="100" r="90" class="circle-bg"></circle>
+                                    <circle cx="100" cy="100" r="90" class="circle-fill subject-chemistry" 
+                                            stroke-dasharray="0 565.48" id="subjectChemCircle"></circle>
+                                </svg>
+                                <div class="circle-text">
+                                    <div class="circle-value" id="subjectChemValue">0%</div>
+                                    <div class="circle-label">Complete</div>
+                                </div>
+                            </div>
+                            <div class="circle-subtitle">⚗️ Chemistry</div>
+                            <div class="circle-description" id="subjectChemDesc">Ready to begin</div>
+                        </div>
+
+                        <div class="circle-card">
+                            <div class="circle-progress">
+                                <svg>
+                                    <circle cx="100" cy="100" r="90" class="circle-bg"></circle>
+                                    <circle cx="100" cy="100" r="90" class="circle-fill subject-physics" 
+                                            stroke-dasharray="0 565.48" id="subjectPhyCircle"></circle>
+                                </svg>
+                                <div class="circle-text">
+                                    <div class="circle-value" id="subjectPhyValue">0%</div>
+                                    <div class="circle-label">Complete</div>
+                                </div>
+                            </div>
+                            <div class="circle-subtitle">⚡ Physics</div>
+                            <div class="circle-description" id="subjectPhyDesc">Let's get started</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Habits Tab -->
+        <div id="habits" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>🏃 21-Day Habit Tracker</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="habit21Input" placeholder="Add 21-day habit..." onkeypress="add21DayHabit(event)">
+                    </div>
+                    <div id="habit21List"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timer Tab -->
+        <div id="timer" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>⏱️ Study Timer</h2>
+                </div>
+                <div class="card-body text-center">
+                    <div class="form-group mb-2" style="max-width: 300px; margin: 0 auto;">
+                        <label class="form-label">Duration (minutes)</label>
+                        <input type="number" class="form-control" id="timerMinutes" value="25" min="1" max="120" onchange="setCustomTimer()">
+                    </div>
+                    
+                    <div class="timer-display" id="timerDisplay">25:00</div>
+                    
+                    <div class="flex gap-2" style="justify-content: center; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="startTimer()" id="timerStartBtn">Start</button>
+                        <button class="btn btn-secondary" onclick="pauseTimer()" id="timerPauseBtn" disabled>Pause</button>
+                        <button class="btn btn-secondary" onclick="resetTimer()">Reset</button>
+                    </div>
+                    
+                    <p class="text-muted mt-2" id="timerSessionInfo">Focus Session • Ready to Start</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics" class="tab-content">
+            <div class="dashboard-grid">
+                <div class="circle-card">
+                    <div class="circle-progress">
+                        <svg>
+                            <circle cx="100" cy="100" r="90" class="circle-bg"></circle>
+                            <circle cx="100" cy="100" r="90" class="circle-fill subject-overall" 
+                                    id="weeklyProgressCircle" stroke-dasharray="0 565.48"></circle>
+                        </svg>
+                        <div class="circle-text">
+                            <div class="circle-value" id="weeklyProgressValue">0%</div>
+                            <div class="circle-label">This Week</div>
+                        </div>
+                    </div>
+                    <div class="circle-subtitle">Weekly Goal</div>
+                    <div class="circle-description" id="weeklyProgressDesc">Track your consistency</div>
+                </div>
+
+                <div class="circle-card">
+                    <div class="circle-progress">
+                        <svg>
+                            <circle cx="100" cy="100" r="90" class="circle-bg"></circle>
+                            <circle cx="100" cy="100" r="90" class="circle-fill subject-biology" 
+                                    id="accuracyCircle" stroke-dasharray="0 565.48"></circle>
+                        </svg>
+                        <div class="circle-text">
+                            <div class="circle-value" id="accuracyValue">0%</div>
+                            <div class="circle-label">Accuracy</div>
+                        </div>
+                    </div>
+                    <div class="circle-subtitle">Test Accuracy</div>
+                    <div class="circle-description" id="accuracyDesc">Keep improving!</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>📈 Performance Insights</h2>
+                </div>
+                <div class="card-body">
+                    <div id="analyticsInsights">
+                        <p class="text-muted">Start studying and taking tests to see your performance insights here...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global application state
+        let appData = {
+            profile: {
+                name: '', age: '', examDate: '', targetTotal: 650
+            },
+            omrTests: [],
+            mockTests: [],
+            mistakes: [],
+            checklist: [],
+            habits: { habit21: [] },
+            analytics: {}
+        };
+
+        // OMR Test state
+        let omrState = {
+            questions: [],
+            answers: {},
+            answerKey: {},
+            timer: null,
+            duration: 30
+        };
+
+        // Timer state
+        let timerState = {
+            interval: null,
+            secondsLeft: 1500,
+            duration: 25,
+            isRunning: false
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            loadProfile();
+            updateExamCountdown();
+            updateDashboard();
+            renderMockTests();
+            renderChecklist();
+            renderHabits();
+            updateTimerDisplay();
+            
+            // Load saved theme
+            const theme = localStorage.getItem('neet-theme');
+            if (theme) document.documentElement.setAttribute('data-theme', theme);
+        });
+
+        // Utility functions
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function showMessage(message, type = 'success') {
+            alert(message);
+        }
+
+        // Data persistence
+        function saveData() {
+            try {
+                localStorage.setItem('neetPlannerData', JSON.stringify(appData));
+            } catch (error) {
+                console.error('Error saving data:', error);
+            }
+        }
+
+        function loadData() {
+            try {
+                const saved = localStorage.getItem('neetPlannerData');
+                if (saved) {
+                    const savedData = JSON.parse(saved);
+                    appData = { ...appData, ...savedData };
+                    
+                    if (!appData.omrTests) appData.omrTests = [];
+                    if (!appData.mockTests) appData.mockTests = [];
+                    if (!appData.mistakes) appData.mistakes = [];
+                    if (!appData.checklist) appData.checklist = [];
+                    if (!appData.habits) appData.habits = { habit21: [] };
+                    if (!appData.habits.habit21) appData.habits.habit21 = [];
+                    
+                    appData.habits.habit21.forEach(h => {
+                        if (!Array.isArray(h.days) || h.days.length !== 21) {
+                            h.days = Array(21).fill(false);
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        function exportData() {
+            try {
+                const dataStr = JSON.stringify(appData, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `neet-planner-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                showMessage('Data exported successfully!');
+            } catch (error) {
+                showMessage('Error exporting data');
+            }
+        }
+
+        function importDataClick() {
+            document.getElementById('importFile').click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    appData = { ...appData, ...importedData };
+                    saveData();
+                    showMessage('Data imported successfully! Refreshing...');
+                    setTimeout(() => location.reload(), 1000);
+                } catch (error) {
+                    showMessage('Error importing data. Please check file format.');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // Theme functions
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('neet-theme', newTheme);
+        }
+
+        function changeFontSize(size) {
+            document.documentElement.style.setProperty('--font-size', size);
+        }
+
+        // Tab navigation
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Update content based on tab
+            if (tabName === 'dashboard') updateDashboard();
+            if (tabName === 'mock') renderMockTests();
+            if (tabName === 'checklist') renderChecklist();
+            if (tabName === 'habits') renderHabits();
+        }
+
+        // Profile functions
+        function loadProfile() {
+            const p = appData.profile;
+            document.getElementById('name').value = p.name || '';
+            document.getElementById('age').value = p.age || '';
+            document.getElementById('examDate').value = p.examDate || '';
+            document.getElementById('targetTotal').value = p.targetTotal || 650;
+        }
+
+        function saveProfile() {
+            const p = appData.profile;
+            p.name = document.getElementById('name').value;
+            p.age = document.getElementById('age').value;
+            p.examDate = document.getElementById('examDate').value;
+            p.targetTotal = parseInt(document.getElementById('targetTotal').value) || 650;
+            saveData();
+        }
+
+        function updateExamCountdown() {
+            const examDate = appData.profile.examDate;
+            if (!examDate) {
+                document.getElementById('daysLeft').textContent = 'Set Date';
+                return;
+            }
+
+            const today = new Date();
+            const exam = new Date(examDate);
+            const diffTime = exam - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays > 0) {
+                document.getElementById('daysLeft').textContent = diffDays;
+            } else if (diffDays === 0) {
+                document.getElementById('daysLeft').textContent = 'Today!';
+            } else {
+                document.getElementById('daysLeft').textContent = 'Past';
+            }
+        }
+
+        // Dashboard functions
+        function updateDashboard() {
+            // Calculate real progress based on data
+            const totalOMRTests = appData.omrTests.length;
+            const totalMockTests = appData.mockTests.length;
+            const totalHabits = appData.habits.habit21.length;
+            const totalChecklist = appData.checklist.length;
+            const completedChecklist = appData.checklist.filter(item => item.completed).length;
+            
+            // Calculate overall progress (0-100)
+            let overallProgress = 0;
+            let factors = 0;
+            
+            if (totalOMRTests > 0) {
+                overallProgress += Math.min(totalOMRTests * 10, 40); // Max 40% from OMR tests
+                factors += 40;
+            }
+            
+            if (totalMockTests > 0) {
+                overallProgress += Math.min(totalMockTests * 15, 30); // Max 30% from mock tests
+                factors += 30;
+            }
+            
+            if (totalHabits > 0) {
+                const habitCompletion = appData.habits.habit21.reduce((sum, habit) => {
+                    return sum + (habit.days.filter(Boolean).length / 21);
+                }, 0) / totalHabits;
+                overallProgress += habitCompletion * 20; // Max 20% from habits
+                factors += 20;
+            }
+            
+            if (totalChecklist > 0) {
+                overallProgress += (completedChecklist / totalChecklist) * 10; // Max 10% from checklist
+                factors += 10;
+            }
+            
+            // Normalize progress
+            if (factors > 0) {
+                overallProgress = Math.min(Math.round(overallProgress), 100);
+            }
+            
+            // Calculate subject-specific progress
+            const bioProgress = Math.min(totalOMRTests * 12 + totalMockTests * 8, 100);
+            const chemProgress = Math.min(totalOMRTests * 10 + totalMockTests * 6, 100);
+            const phyProgress = Math.min(totalOMRTests * 11 + totalMockTests * 7, 100);
+
+            // Update circular progress bars
+            updateCircularProgress('studyProgressCircle', 'studyProgressValue', overallProgress);
+            updateCircularProgress('bioProgressCircle', 'bioProgressValue', bioProgress);
+            updateCircularProgress('chemProgressCircle', 'chemProgressValue', chemProgress);
+            updateCircularProgress('phyProgressCircle', 'phyProgressValue', phyProgress);
+
+            // Update descriptions
+            updateProgressDescriptions(overallProgress, bioProgress, chemProgress, phyProgress);
+
+            // Update mini stats
+            document.getElementById('totalStudyHoursStat').textContent = totalOMRTests * 0.5 + totalMockTests * 3;
+            document.getElementById('totalOMRTestsStat').textContent = totalOMRTests;
+            document.getElementById('totalMockTestsStat').textContent = totalMockTests;
+            document.getElementById('activeHabitsStat').textContent = totalHabits;
+
+            // Update subject progress
+            updateCircularProgress('subjectBioCircle', 'subjectBioValue', bioProgress);
+            updateCircularProgress('subjectChemCircle', 'subjectChemValue', chemProgress);
+            updateCircularProgress('subjectPhyCircle', 'subjectPhyValue', phyProgress);
+
+            // Update analytics
+            const weeklyProgress = Math.min(overallProgress + 15, 100);
+            const accuracy = totalOMRTests > 0 ? Math.min(75 + totalOMRTests * 2, 95) : 0;
+            
+            updateCircularProgress('weeklyProgressCircle', 'weeklyProgressValue', weeklyProgress);
+            updateCircularProgress('accuracyCircle', 'accuracyValue', accuracy);
+            
+            updateAnalyticsDescriptions(weeklyProgress, accuracy);
+        }
+
+        function updateCircularProgress(circleId, valueId, percentage) {
+            const circle = document.getElementById(circleId);
+            const valueEl = document.getElementById(valueId);
+            
+            if (circle && valueEl) {
+                const circumference = 2 * Math.PI * 90; // radius is 90
+                const offset = circumference - (percentage / 100) * circumference;
+                circle.style.strokeDasharray = `${circumference - offset} ${circumference}`;
+                valueEl.textContent = `${percentage}%`;
+            }
+        }
+
+        function updateProgressDescriptions(overall, bio, chem, phy) {
+            const overallDesc = overall >= 80 ? "Excellent progress!" : 
+                               overall >= 60 ? "Great work, keep going!" : 
+                               overall >= 40 ? "Good start, stay consistent!" : 
+                               overall > 0 ? "Just getting started!" : "Ready to begin your journey!";
+            document.getElementById('studyProgressDesc').textContent = overallDesc;
+
+            const bioDesc = bio >= 80 ? "Biology mastery unlocked!" : 
+                           bio >= 60 ? "Excellent biology progress!" : 
+                           bio >= 40 ? "Good biology foundation!" : 
+                           bio > 0 ? "Biology journey started!" : "Ready to explore biology!";
+            document.getElementById('bioProgressDesc').textContent = bioDesc;
+            document.getElementById('subjectBioDesc').textContent = bioDesc;
+
+            const chemDesc = chem >= 80 ? "Chemistry expert in making!" : 
+                            chem >= 60 ? "Strong chemistry progress!" : 
+                            chem >= 40 ? "Chemistry basics covered!" : 
+                            chem > 0 ? "Chemistry adventure begun!" : "Let's start chemistry!";
+            document.getElementById('chemProgressDesc').textContent = chemDesc;
+            document.getElementById('subjectChemDesc').textContent = chemDesc;
+
+            const phyDesc = phy >= 80 ? "Physics mastery achieved!" : 
+                           phy >= 60 ? "Solid physics understanding!" : 
+                           phy >= 40 ? "Physics fundamentals done!" : 
+                           phy > 0 ? "Physics journey started!" : "Begin the physics adventure!";
+            document.getElementById('phyProgressDesc').textContent = phyDesc;
+            document.getElementById('subjectPhyDesc').textContent = phyDesc;
+        }
+
+        function updateAnalyticsDescriptions(weekly, accuracy) {
+            const weeklyDesc = weekly >= 80 ? "Amazing consistency!" : 
+                              weekly >= 60 ? "Great weekly habit!" : 
+                              weekly >= 40 ? "Building good momentum!" : "Track your consistency!";
+            document.getElementById('weeklyProgressDesc').textContent = weeklyDesc;
+
+            const accDesc = accuracy >= 90 ? "Outstanding accuracy!" : 
+                           accuracy >= 75 ? "Great test performance!" : 
+                           accuracy >= 60 ? "Good accuracy rate!" : 
+                           accuracy > 0 ? "Room for improvement!" : "Keep improving!";
+            document.getElementById('accuracyDesc').textContent = accDesc;
+        }
+
+        // OMR functions
+        function loadFullNEET() {
+            document.getElementById('testName').value = 'NEET Full Test';
+            document.getElementById('totalQuestions').value = '180';
+            document.getElementById('testDuration').value = '180';
+        }
+
+        function startOMRTest() {
+            const testName = document.getElementById('testName').value.trim() || 'OMR Test';
+            const totalQuestions = parseInt(document.getElementById('totalQuestions').value) || 20;
+            const duration = parseInt(document.getElementById('testDuration').value) || 30;
+
+            setupOMRTest(testName, totalQuestions, duration);
+        }
+
+        function setupOMRTest(testName, totalQuestions, duration) {
+            omrState.questions = [];
+            omrState.answers = {};
+            omrState.answerKey = {};
+            omrState.duration = duration;
+
+            // Generate questions
+            for (let i = 1; i <= totalQuestions; i++) {
+                const subjects = ['biology', 'chemistry', 'physics'];
+                omrState.questions.push({ 
+                    id: i, 
+                    subject: subjects[Math.floor(Math.random() * subjects.length)]
+                });
+            }
+
+            document.getElementById('testTitle').textContent = testName;
+            document.getElementById('omrSetup').classList.add('hidden');
+            document.getElementById('omrTest').classList.remove('hidden');
+            
+            renderOMRQuestions();
+            startOMRTimer();
+        }
+
+        function renderOMRQuestions() {
+            const container = document.getElementById('omrQuestions');
+            container.innerHTML = omrState.questions.map(q => `
+                <div class="question-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div style="font-weight: 700; color: var(--primary); font-size: 1.125rem;">Q${q.id}</div>
+                        <div style="padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; color: white;" 
+                             style="background: ${q.subject === 'biology' ? 'linear-gradient(135deg, var(--success), #14b8a6)' : 
+                                                q.subject === 'chemistry' ? 'linear-gradient(135deg, var(--warning), #ea580c)' : 
+                                                'linear-gradient(135deg, var(--accent), #d97706)'}">${q.subject}</div>
+                    </div>
+                    <div class="bubbles">
+                        <div class="bubble ${omrState.answers[q.id] === 'A' ? 'selected' : ''}" onclick="selectAnswer(${q.id}, 'A')">A</div>
+                        <div class="bubble ${omrState.answers[q.id] === 'B' ? 'selected' : ''}" onclick="selectAnswer(${q.id}, 'B')">B</div>
+                        <div class="bubble ${omrState.answers[q.id] === 'C' ? 'selected' : ''}" onclick="selectAnswer(${q.id}, 'C')">C</div>
+                        <div class="bubble ${omrState.answers[q.id] === 'D' ? 'selected' : ''}" onclick="selectAnswer(${q.id}, 'D')">D</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            updateOMRProgress();
+        }
+
+        function selectAnswer(questionId, answer) {
+            if (omrState.answers[questionId] === answer) {
+                delete omrState.answers[questionId];
+            } else {
+                omrState.answers[questionId] = answer;
+            }
+            renderOMRQuestions();
+        }
+
+        function updateOMRProgress() {
+            const answered = Object.keys(omrState.answers).length;
+            const total = omrState.questions.length;
+            const percentage = total > 0 ? (answered / total) * 100 : 0;
+            
+            document.getElementById('omrProgress').style.width = `${percentage}%`;
+            document.getElementById('progressText').textContent = `${answered} / ${total} answered`;
+        }
+
+        function startOMRTimer() {
+            let timeLeft = omrState.duration * 60;
+            
+            omrState.timer = setInterval(() => {
+                const hours = Math.floor(timeLeft / 3600);
+                const minutes = Math.floor((timeLeft % 3600) / 60);
+                const seconds = timeLeft % 60;
+                
+                const timerEl = document.getElementById('omrTimer');
+                timerEl.textContent = 
+                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                // Add warning colors
+                timerEl.classList.remove('timer-warning', 'timer-danger');
+                if (timeLeft <= 300) { // 5 minutes
+                    timerEl.classList.add('timer-danger');
+                } else if (timeLeft <= 600) { // 10 minutes
+                    timerEl.classList.add('timer-warning');
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(omrState.timer);
+                    submitOMRTest();
+                    return;
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        function submitOMRTest() {
+            if (omrState.timer) {
+                clearInterval(omrState.timer);
+                omrState.timer = null;
+            }
+
+            const testResult = {
+                id: generateId(),
+                date: new Date().toISOString().split('T')[0],
+                testName: document.getElementById('testTitle').textContent,
+                totalQuestions: omrState.questions.length,
+                answers: { ...omrState.answers }
+            };
+
+            appData.omrTests.push(testResult);
+            saveData();
+
+            document.getElementById('omrTest').classList.add('hidden');
+            document.getElementById('omrResults').classList.remove('hidden');
+            
+            calculateOMRResults();
+        }
+
+        function calculateOMRResults() {
+            const total = omrState.questions.length;
+            const answered = Object.keys(omrState.answers).length;
+            const unanswered = total - answered;
+
+            document.getElementById('totalScore').textContent = 'Enter Key';
+            document.getElementById('correctAnswers').textContent = 'Enter Key';
+            document.getElementById('wrongAnswers').textContent = 'Enter Key';
+            document.getElementById('unansweredQuestions').textContent = unanswered;
+        }
+
+        function inputAnswerKey() {
+            document.getElementById('omrResults').classList.add('hidden');
+            document.getElementById('answerKeyInput').classList.remove('hidden');
+            renderAnswerKeyGrid();
+        }
+
+        function renderAnswerKeyGrid() {
+            const container = document.getElementById('answerKeyGrid');
+            container.innerHTML = omrState.questions.map(q => `
+                <div class="answer-question">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div style="font-weight: 700; color: var(--primary);">Q${q.id}</div>
+                        <div style="padding: 0.25rem 0.5rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600; color: white; background: ${q.subject === 'biology' ? 'var(--success)' : q.subject === 'chemistry' ? 'var(--warning)' : 'var(--accent)'}">${q.subject}</div>
+                    </div>
+                    <div class="answer-bubbles">
+                        <div class="answer-radio">
+                            <input type="radio" name="answer_${q.id}" value="A" id="ans_${q.id}_A">
+                            <label for="ans_${q.id}_A">A</label>
+                        </div>
+                        <div class="answer-radio">
+                            <input type="radio" name="answer_${q.id}" value="B" id="ans_${q.id}_B">
+                            <label for="ans_${q.id}_B">B</label>
+                        </div>
+                        <div class="answer-radio">
+                            <input type="radio" name="answer_${q.id}" value="C" id="ans_${q.id}_C">
+                            <label for="ans_${q.id}_C">C</label>
+                        </div>
+                        <div class="answer-radio">
+                            <input type="radio" name="answer_${q.id}" value="D" id="ans_${q.id}_D">
+                            <label for="ans_${q.id}_D">D</label>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function fillSampleAnswers() {
+            omrState.questions.forEach(q => {
+                const options = ['A', 'B', 'C', 'D'];
+                const randomAnswer = options[Math.floor(Math.random() * options.length)];
+                const radioButton = document.querySelector(`input[name="answer_${q.id}"][value="${randomAnswer}"]`);
+                if (radioButton) {
+                    radioButton.checked = true;
+                }
+            });
+        }
+
+        function processOMRAnswerKey() {
+            const answerKey = {};
+            let missingAnswers = [];
+
+            omrState.questions.forEach(q => {
+                const selectedRadio = document.querySelector(`input[name="answer_${q.id}"]:checked`);
+                if (selectedRadio) {
+                    answerKey[q.id] = selectedRadio.value;
+                } else {
+                    missingAnswers.push(q.id);
+                }
+            });
+
+            if (missingAnswers.length > 0) {
+                showMessage(`Please provide answers for questions: ${missingAnswers.join(', ')}`);
+                return;
+            }
+
+            try {
+                omrState.answerKey = answerKey;
+
+                let correct = 0;
+                let wrong = 0;
+
+                omrState.questions.forEach(q => {
+                    const userAnswer = omrState.answers[q.id];
+                    const correctAnswer = answerKey[q.id];
+                    
+                    if (userAnswer && correctAnswer) {
+                        if (userAnswer === correctAnswer) {
+                            correct++;
+                        } else {
+                            wrong++;
+                        }
+                    }
+                });
+
+                const totalScore = (correct * 4) - (wrong * 1);
+                const unanswered = omrState.questions.length - Object.keys(omrState.answers).length;
+
+                document.getElementById('totalScore').textContent = totalScore;
+                document.getElementById('correctAnswers').textContent = correct;
+                document.getElementById('wrongAnswers').textContent = wrong;
+                document.getElementById('unansweredQuestions').textContent = unanswered;
+
+                if (appData.omrTests.length > 0) {
+                    const lastTest = appData.omrTests[appData.omrTests.length - 1];
+                    lastTest.results = { totalScore, correct, wrong, unanswered };
+                    saveData();
+                }
+
+                document.getElementById('answerKeyInput').classList.add('hidden');
+                document.getElementById('omrResults').classList.remove('hidden');
+                
+                showMessage('Answer key processed successfully!');
+                updateDashboard();
+
+            } catch (error) {
+                showMessage('Error processing answer key');
+            }
+        }
+
+        function cancelAnswerKey() {
+            document.getElementById('answerKeyInput').classList.add('hidden');
+            document.getElementById('omrResults').classList.remove('hidden');
+        }
+
+        function newOMRTest() {
+            document.getElementById('omrResults').classList.add('hidden');
+            document.getElementById('omrSetup').classList.remove('hidden');
+            
+            omrState.questions = [];
+            omrState.answers = {};
+            omrState.answerKey = {};
+            
+            if (omrState.timer) {
+                clearInterval(omrState.timer);
+                omrState.timer = null;
+            }
+        }
+
+        function cancelOMRTest() {
+            if (!confirm('Are you sure you want to cancel the test?')) return;
+            
+            if (omrState.timer) {
+                clearInterval(omrState.timer);
+                omrState.timer = null;
+            }
+            
+            newOMRTest();
+        }
+
+        // Mock test functions
+        function showMockTestForm() {
+            document.getElementById('mockTestForm').classList.add('active');
+            document.getElementById('mockTestDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        function cancelMockTest() {
+            document.getElementById('mockTestForm').classList.remove('active');
+            clearMockTestForm();
+        }
+
+        function clearMockTestForm() {
+            document.getElementById('mockTestName').value = '';
+            document.getElementById('mockTestDate').value = '';
+            document.getElementById('mockBioScore').value = '';
+            document.getElementById('mockChemScore').value = '';
+            document.getElementById('mockPhyScore').value = '';
+            document.getElementById('mockTotalScore').value = '';
+            document.getElementById('mockTestNotes').value = '';
+        }
+
+        function updateMockTotal() {
+            const bio = parseInt(document.getElementById('mockBioScore').value) || 0;
+            const chem = parseInt(document.getElementById('mockChemScore').value) || 0;
+            const phy = parseInt(document.getElementById('mockPhyScore').value) || 0;
+            const total = bio + chem + phy;
+            document.getElementById('mockTotalScore').value = total;
+        }
+
+        function saveMockTest() {
+            const name = document.getElementById('mockTestName').value.trim();
+            const date = document.getElementById('mockTestDate').value;
+            const bioScore = parseInt(document.getElementById('mockBioScore').value) || 0;
+            const chemScore = parseInt(document.getElementById('mockChemScore').value) || 0;
+            const phyScore = parseInt(document.getElementById('mockPhyScore').value) || 0;
+            const notes = document.getElementById('mockTestNotes').value;
+
+            if (!name || !date) {
+                showMessage('Please fill in test name and date');
+                return;
+            }
+
+            const mockTest = {
+                id: generateId(),
+                name: name,
+                date: date,
+                bioScore: bioScore,
+                chemScore: chemScore,
+                phyScore: phyScore,
+                totalScore: bioScore + chemScore + phyScore,
+                notes: notes
+            };
+
+            appData.mockTests.push(mockTest);
+            saveData();
+            cancelMockTest();
+            renderMockTests();
+            updateDashboard();
+            showMessage('Mock test saved successfully!');
+        }
+
+        function renderMockTests() {
+            const container = document.getElementById('mockTestsList');
+            const tests = appData.mockTests.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            container.innerHTML = tests.map(test => `
+                <div class="mock-test-item">
+                    <div class="mock-test-header">
+                        <div>
+                            <h3 style="margin: 0; margin-bottom: 0.5rem;">${test.name}</h3>
+                            <p class="text-muted" style="margin: 0; font-size: 0.875rem;">${new Date(test.date).toLocaleDateString()}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="btn btn-danger btn-sm" onclick="deleteMockTest('${test.id}')">Delete</button>
+                        </div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" style="color: var(--primary);">${test.totalScore}</div>
+                            <div class="stat-label">Total Score</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color: var(--success);">${test.bioScore}</div>
+                            <div class="stat-label">Biology</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color: var(--warning);">${test.chemScore}</div>
+                            <div class="stat-label">Chemistry</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color: var(--accent);">${test.phyScore}</div>
+                            <div class="stat-label">Physics</div>
+                        </div>
+                    </div>
+                    ${test.notes ? `<div class="text-muted mt-2" style="margin-top: 1rem; font-size: 0.875rem;"><strong>Notes:</strong> ${test.notes}</div>` : ''}
+                </div>
+            `).join('');
+
+            if (tests.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center">No mock tests yet. Add your first test above!</p>';
+            }
+        }
+
+        function deleteMockTest(id) {
+            if (!confirm('Delete this mock test?')) return;
+            appData.mockTests = appData.mockTests.filter(t => t.id !== id);
+            saveData();
+            renderMockTests();
+            updateDashboard();
+            showMessage('Mock test deleted');
+        }
+
+        // Checklist functions
+        function renderChecklist() {
+            const container = document.getElementById('checklistItems');
+            container.innerHTML = appData.checklist.map(item => `
+                <div class="checklist-item ${item.completed ? 'completed' : ''}">
+                    <input type="checkbox" ${item.completed ? 'checked' : ''} 
+                           onchange="toggleChecklistItem('${item.id}')">
+                    <span class="checklist-text">${item.text}</span>
+                    <button class="btn btn-danger btn-sm" onclick="deleteChecklistItem('${item.id}')">×</button>
+                </div>
+            `).join('');
+
+            if (appData.checklist.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center">No checklist items yet. Add one above!</p>';
+            }
+        }
+
+        function addChecklistItem(event) {
+            if (event.key !== 'Enter') return;
+            const text = event.target.value.trim();
+            if (!text) return;
+            
+            const item = {
+                id: generateId(),
+                text: text,
+                completed: false
+            };
+            
+            appData.checklist.push(item);
+            saveData();
+            event.target.value = '';
+            renderChecklist();
+            updateDashboard();
+        }
+
+        function toggleChecklistItem(id) {
+            const item = appData.checklist.find(i => i.id === id);
+            if (item) {
+                item.completed = !item.completed;
+                saveData();
+                renderChecklist();
+                updateDashboard();
+            }
+        }
+
+        function deleteChecklistItem(id) {
+            if (!confirm('Delete this item?')) return;
+            appData.checklist = appData.checklist.filter(i => i.id !== id);
+            saveData();
+            renderChecklist();
+            updateDashboard();
+        }
+
+        // Habit functions
+        function renderHabits() {
+            const container = document.getElementById('habit21List');
+            const habits = appData.habits.habit21;
+            
+            container.innerHTML = habits.map(habit => `
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <div class="card-body">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">${habit.name}</h3>
+                            <button class="btn btn-danger btn-sm" onclick="delete21DayHabit('${habit.id}')">Delete</button>
+                        </div>
+                        <div class="habit-grid">
+                            ${Array.from({length: 21}, (_, i) => `
+                                <div class="habit-day ${habit.days[i] ? 'completed' : ''}" 
+                                     onclick="toggle21DayHabit('${habit.id}', ${i})" 
+                                     title="Day ${i + 1}">
+                                    ${i + 1}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="text-muted" style="margin-top: 1rem;">
+                            Progress: ${habit.days.filter(Boolean).length}/21 days (${Math.round((habit.days.filter(Boolean).length / 21) * 100)}%)
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            if (habits.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center">No habits yet. Add a 21-day habit above!</p>';
+            }
+        }
+
+        function add21DayHabit(event) {
+            if (event.key !== 'Enter') return;
+            const name = event.target.value.trim();
+            if (!name) return;
+            
+            const habit = {
+                id: generateId(),
+                name: name,
+                days: Array(21).fill(false)
+            };
+            
+            appData.habits.habit21.push(habit);
+            saveData();
+            event.target.value = '';
+            renderHabits();
+            updateDashboard();
+        }
+
+        function toggle21DayHabit(id, dayIndex) {
+            const habit = appData.habits.habit21.find(h => h.id === id);
+            if (habit) {
+                if (!habit.days) habit.days = Array(21).fill(false);
+                habit.days[dayIndex] = !habit.days[dayIndex];
+                saveData();
+                renderHabits();
+                updateDashboard();
+            }
+        }
+
+        function delete21DayHabit(id) {
+            if (!confirm('Delete this habit?')) return;
+            appData.habits.habit21 = appData.habits.habit21.filter(h => h.id !== id);
+            saveData();
+            renderHabits();
+            updateDashboard();
+        }
+
+        // Timer functions
+        function setCustomTimer() {
+            const minutes = parseInt(document.getElementById('timerMinutes').value) || 25;
+            timerState.duration = minutes;
+            timerState.secondsLeft = minutes * 60;
+            updateTimerDisplay();
+        }
+
+        function startTimer() {
+            document.getElementById('timerStartBtn').disabled = true;
+            document.getElementById('timerPauseBtn').disabled = false;
+            timerState.isRunning = true;
+            
+            document.getElementById('timerSessionInfo').textContent = `Focus Session • ${timerState.duration} minutes`;
+            
+            timerState.interval = setInterval(() => {
+                if (timerState.secondsLeft > 0) {
+                    timerState.secondsLeft--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerState.interval);
+                    timerState.interval = null;
+                    timerState.isRunning = false;
+                    
+                    showMessage('⏰ Study session complete! Great work!');
+                    
+                    document.getElementById('timerStartBtn').disabled = false;
+                    document.getElementById('timerPauseBtn').disabled = true;
+                    document.getElementById('timerSessionInfo').textContent = 'Session Complete • Take a break!';
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            document.getElementById('timerStartBtn').disabled = false;
+            document.getElementById('timerPauseBtn').disabled = true;
+            timerState.isRunning = false;
+            
+            clearInterval(timerState.interval);
+            timerState.interval = null;
+            
+            document.getElementById('timerSessionInfo').textContent = `Paused • ${Math.ceil(timerState.secondsLeft / 60)} minutes left`;
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timerState.secondsLeft = timerState.duration * 60;
+            updateTimerDisplay();
+            document.getElementById('timerSessionInfo').textContent = 'Focus Session • Ready to Start';
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerState.secondsLeft / 60);
+            const seconds = timerState.secondsLeft % 60;
+            const display = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerEl = document.getElementById('timerDisplay');
+            timerEl.textContent = display;
+            
+            // Add warning colors
+            timerEl.classList.remove('timer-warning', 'timer-danger');
+            if (timerState.secondsLeft <= 300) { // 5 minutes
+                timerEl.classList.add('timer-danger');
+            } else if (timerState.secondsLeft <= 600) { // 10 minutes
+                timerEl.classList.add('timer-warning');
+            }
+        }
+
+        // Utility functions
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize dashboard after a short delay to ensure all elements are ready
+        setTimeout(() => {
+            updateDashboard();
+            renderMockTests();
+            renderChecklist();
+            renderHabits();
+        }, 100);
+    </script>
+</body>
+</html>
